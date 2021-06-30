@@ -85,8 +85,8 @@ insert into modelo_carros (nome_modelo, ano_modelo, cilindradas, preco_medio, ma
 values ('Ka', 2021, 1000, 58.101, 3, 1);
 insert into modelo_carros (nome_modelo, ano_modelo, cilindradas, preco_medio, marca_carro_id, categoria_modelo_id)
 values ('EcoSport', 2021, 1500, 83.965, 3, 4);
-insert into modelo_carros (nome_modelo, ano_modelo, cilindradas, preco_medio, marca_carro_id, categoria_modelo_id)
-values ('Fox', 2021, 1600, 60.452, 4, 4);
+insert into modelo_carros (nome_modelo, ano_modelo, cilindradas, preco_medio, categoria_modelo_id)
+values ('Fox', 2021, 1600, 60.452, 4);
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
@@ -126,6 +126,9 @@ ALTER TABLE public.modelo_carros ALTER COLUMN marca_carro_id DROP NOT NULL; /*MU
 ALTER TABLE public.modelo_carros ALTER COLUMN marca_carro_id SET NOT NULL; /*MUDAR O 'NOTT NULL' DE False PARA True*/
 
 ALTER TABLE public.modelo_carros ADD categoria_modelo_id int references categorias(id) NULL; /*ADICIONAR UM NOVO CAMPO NA TABELA modelo_carros*/
+
+delete from modelo_carros 
+where id = 23;
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 
 --> JUNÇÃO DE TABELAS
@@ -157,6 +160,7 @@ INNER JOIN categorias ca on mc.categoria_modelo_id = ca.id
 where mc.categoria_modelo_id = 3
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 
+--> USANDO O INNER JOIN:
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 /*A PARTIR DOS CÓDIGOS ABAIXO EU EXIBO TODOS OS CARROS DE CADA MARCA SEPARADAMENTE.
  EXEMPLO: --> TODOS OS CARROS DA MARCA --CHEVROLET--*/ 
@@ -223,6 +227,32 @@ on mc.categoria_modelo_id = ca.id
 where mc.categoria_modelo_id = 8
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 
+--> USANO O LEFT JOIN:
+/*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
+/*VAMOS SELECIONAR TODOS OSA CARROS E SUAS CATEGORIAS, INCLUSIVE OS QUE NÃO TEM NENHUMA CATEGORIA
+-- PRIMEIRO VAMOS ADICIONAR UM CARRO QUE NÃO TEM NENHUMA CATEGORIA NA TABELA:*/
+insert into modelo_carros (nome_modelo, ano_modelo, cilindradas, preco_medio)
+values ('Hafei Furgão', 2011, 1400, 15467);
+-- AGORA PODEMOS CONSUTAR AS TABELAS modelo_carros E A TABELA categorias POR MEIO DO LEFT JOIN:
+select nome_modelo, nome_categoria from modelo_carros mc left join categorias c 
+ON mc.categoria_modelo_id = c.id;
+-- AGORA VAMOS SELECIONAR TODAS AS CATEGORIAS E SEUS CARROS INCLUSIVE AQUELAS QUE NÃO TEM NENHUM CARRO:
+select nome_categoria, nome_modelo from categorias c left join modelo_carros mc 
+on mc.categoria_modelo_id = c.id 
+/*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
+
+--> USANDO O RIGHT JOIN:
+/*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
+/*VAMOS SELECIONAR TODOS OSA CARROS E SUAS CATEGORIAS, INCLUSIVE OS QUE NÃO TEM NENHUMA CATEGORIA*/
+-- AGORA PODEMOS CONSUTAR AS TABELAS modelo_carros E A TABELA categorias POR MEIO DO RIGHT JOIN:
+select nome_categoria, nome_modelo from categorias c right join  modelo_carros mc 
+on mc.categoria_modelo_id = c.id;
+-- AGORA VAMOS SELECIONAR TODAS AS CATEGORIAS E SEUS CARROS INCLUSIVE AQUELAS QUE NÃO TEM NENHUM CARRO:
+select nome_modelo, nome_categoria from modelo_carros mc right join categorias c 
+ON mc.categoria_modelo_id = c.id;
+/*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
+
+
 --> EXIBINDO OS CARROS PELOS PREÇOS*/
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 /*APENAS OS CARROS QUE CUSTAM ATÉ R$ 30.000*/
@@ -241,3 +271,51 @@ select * from modelo_carros mc
 where cast(preco_medio as numeric) between 91000 and 200000
 order by cast(preco_medio as numeric) asc;
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
+
+--> EXIBINDO OS CARROS DE ACORDO COM O ANO DO MODELO:
+/*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
+/*APENAS OS CARROS DE ANO ATÉ 2005*/
+select * from modelo_carros mc 
+where ano_modelo <= 2005
+order by ano_modelo asc;
+
+/*APENAS OS CARROS DE ANO ENTRE 2006 E 2017*/
+select * from modelo_carros mc 
+where ano_modelo between 2006 and 2017
+order by ano_modelo asc;
+
+/*APENAS OS CARROS DE ANO ENTRE 2018 E 2022*/
+select * from modelo_carros mc 
+where ano_modelo between 2018 and 2022
+order by ano_modelo asc;
+/*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
+
+--> EXIBINDO OS CARROS DE ACORDO COM A POTÊNCIA DO MOTOR
+/*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
+/*LISTA DOS CARROS ORDENADA PELA POTÊNCIA DO MOTOR. DA MAIOR PARA A MENOR:*/
+select nome_modelo, cilindradas from modelo_carros mc 
+order by cilindradas desc;
+/* APENAS OS CARROS DE 1000 CILINDRADAS:*/
+select * from modelo_carros mc 
+where cilindradas  = 1000
+order by preco_medio asc;
+/* APENAS OS CARROS DE 1600 CILINDRADAS:*/
+select * from modelo_carros mc 
+where cilindradas = 1600
+order by preco_medio asc;
+/* APENAS OS CARROS DE 2000 CILINDRADAS:*/
+select * from modelo_carros mc 
+where cilindradas = 2000
+order by preco_medio asc;
+/*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
+
+
+
+
+
+
+
+
+
+
+
